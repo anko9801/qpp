@@ -128,56 +128,10 @@ public:
 
 		return decide+1;
 	}
-};
 
-/*
-Qubit X(Qubit *x) {
-	swap(x->zero, x->one);
-	return *x;
-}
-
-Qubit Y(Qubit *x) {
-	swap(x->zero, x->one);
-	x->zero = x->zero * 1i;
-	x->one = x->one * -1i;
-	return *x;
-}
-
-Qubit Z(Qubit *x) {
-	x->one = x->one * -1;
-	return *x;
-}
-
-Qubit H(Qubit *x) {
-	Qubit ans;
-	ans.zero = sqrt(2) * (x->zero + x->one) / 2;
-	ans.one = sqrt(2) * (x->zero - x->one) / 2;
-	x->zero = ans.zero;
-	x->one = ans.one;
-	return *x;
-}
-
-Qubit Rx(double theta, Qubit *x) {
-	Qubit ans;
-	ans.zero = sqrt(2) * x->zero / 2;
-	ans.one = sqrt(2) * x->one * (cos(theta) + 1.0i*sin(theta)) / 2;
-	x->zero = ans.zero;
-	x->one = ans.one;
-	return *x;
-}
-
-int M(Qubit x) {
-	double rand_val = rand() / static_cast<double>(RAND_MAX);
-	double measure_val = pow(cabs(x.zero), 2);
-
-	if (rand_val < measure_val) {
-		x.zero = 1;
-		x.one = 0;
-		return 0;
-	}else{
-		x.zero = 0;
-		x.one = 1;
-		return 1;
+	void SWAP(int a, int b) {
+		CNOT(a, b);
+		CNOT(b, a);
+		CNOT(a, b);
 	}
-}*/
-
+};

@@ -7,7 +7,7 @@ int main() {
 		Qubits x = Qubits(i, 3);
 		x.CCNOT(1, 0, 2);
 		x.CNOT(0, 1);
-		x.X(1);
+		x.SWAP(0, 1);
 		printf("i = %d\n", x.M());
 	}
 	return 0;
