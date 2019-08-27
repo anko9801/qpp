@@ -1,8 +1,9 @@
 #include "q++.hpp"
 #include <iostream>
+
 using namespace std;
 
-void add(){
+void add(Qubit a, Qubit b){
 	for (int i = 0;i < 4;i++) {
 		Qubits x = Qubits(i, 3);
 		x.CCNOT(1, 0, 2);
@@ -12,15 +13,18 @@ void add(){
 	}
 }
 
-int main() {
-	Qubits x = Qubits(0, 3);
-	x.Set(1);
-	x.H(1);
-	x.CNOT(1, 2);
+int test() {
+	Qubits x = Qubits(2, 2);
+	x.print();
 	x.CNOT(0, 1);
-	x.H(0);
-	int M1 = x.M(0);
-	int M2 = x.M(1);
-	x.X()
+	x.print();
+	x.CNOT(0, 1);
+	x.print();
+
+	return 0;
+}
+
+int main() {
+
 	return 0;
 }
