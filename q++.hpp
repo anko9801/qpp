@@ -77,6 +77,28 @@ public:
 		}
 	}
 
+	void Y(int index) {
+		int bitmask = (1 << index);
+
+		for (int i = 0;i < q_size;i++) {
+			if ((i & bitmask) == bitmask) {
+				swap(elem[i], elem[i ^ bitmask]);
+				elem[i]			  = elem[i] * complex<double>(0.0, 1.0);
+				elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, -1.0);
+			}
+		}
+	}
+
+	void Z(int index) {
+		int bitmask = (1 << index);
+
+		for (int i = 0;i < q_size;i++) {
+			if ((i & bitmask) == bitmask) {
+				elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(-1.0, 0.0);
+			}
+		}
+	}
+
 	void Rx(int index, double theta) {
 		int bitmask = (1 << index);
 
