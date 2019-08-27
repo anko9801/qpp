@@ -46,7 +46,7 @@ public:
 		CCNOT(control, control, target);
 	}
 
-	void SetZero(int index) {
+	void Set(int index) {
 		for (int i = 0;i < q_size;i++) {
 			elem[i] = complex<double>(0.0, 0.0);
 		}
@@ -111,7 +111,27 @@ public:
 		}
 	}
 
-	int M() {
+	int M(int index) {
+		double rand_val = rand() / static_cast<double>(RAND_MAX);
+		double cur_val = 0.0;
+		int bitmask = 1 << index;
+		int decide = -1;
+
+		for (int i = 0;i < q_size;i++) {
+			if ((i & bitmask) == bitmask) {
+				cur_val += pow(abs(elem[i]), 2.0);
+				if (rand_val < cur_val) {
+					elem[i] = 1.0;
+				}else{
+					elem[i] = 0.0;
+					decide = i;
+				}
+			}
+		}
+		return decide+1;
+	}
+
+	int M_all() {
 		double rand_val = rand() / static_cast<double>(RAND_MAX);
 		double cur_val = 0.0;
 		int decide = -1;
@@ -125,7 +145,6 @@ public:
 				decide = i;
 			}
 		}
-
 		return decide+1;
 	}
 
