@@ -38,14 +38,12 @@ void FullSuber(Qubits *qbits, int a, int b, int c0, int c1) {
 }
 
 int Sub(int bit, int a, int b) {
-	//Qubits qbits (a << 2*bit | b, bit*3+1);
-	Qubits qbits (a, 4);
+	Qubits qbits (a << 2*bit | b, bit*3+1);
+	//Qubits qbits (a, 4);
 	for (int i = 0;i < bit;i++) {
 		FullSuber(&qbits, i, i+bit, i+2*bit, i+2*bit+1);
 	}
 	int res = qbits.M_all();
-	//res >>= bit;
-	//res &= 0b001;
 	return res;
 }
 
@@ -71,7 +69,7 @@ int main() {
 			printf("%x - %x = %s\n", a, b, btoS(4, Sub(1, a, b)).c_str());
 		}
 	}
-	for (int a = 0;a < 8;a++) {
+	for (int a = 0;a < 16;a++) {
 		printf("%x - %x = %s\n", a, 0, btoS(4, Sub(1, a, 0)).c_str());
 	}
 	return 0;
