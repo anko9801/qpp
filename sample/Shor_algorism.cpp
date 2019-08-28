@@ -28,6 +28,42 @@ int2 renbun(double a) {
 	return bun;
 }
 
+Qubits quantum_fourier(Qubits x, int begin, int end) {
+	for (int i = end-1;i >= begin;i--) {
+		for (int j = 1;j < i-begin+2;j++) {
+			printf("%d %d\n", i, j);
+			if (j == 1)
+				x.H(i);
+			else
+				x.CRx(i-j+1, i, 2 * M_PI / pow(2, j));
+		}
+	}
+
+	for (int i = 0;i < x.bits / 2;i++) {
+		x.SWAP(i, x.bits-1 - i);
+	}
+	return x;
+}
+
+Qubits quantum_reverse_fourier(Qubits x, int begin, int end) {
+	for (int i = begin;i < (begin+end) / 2;i++) {
+		x.SWAP(i, end-1 - i + begin);
+	}
+
+	x.print_s();
+	for (int i = begin;i < end;i++) {
+		for (int j = i+1-begin;j >= 1;j--) {
+			printf("%d %d\n", i, j);
+			if (j == 1)
+				x.H(i);
+			else
+				x.CRx(i-j+1, i, - 2 * M_PI / pow(2, j));
+		}
+	}
+	//x.print_s();
+	return x;
+}
+
 Qubits quantum_fourier(Qubits x, int n) {
 	for (int i = 0;i < n;i++) {
 		for (int j = 1;j <= n - i;j++) {
@@ -65,29 +101,57 @@ int gcd(int a, int b) {
 	return gcd(b, a % b);
 }
 
-int Phase_estimation() {
+void ROR(Qubits q, int begin, int end) {
+	for (int i = end;i > begin;i--) {
+		q.SWAP(i, i-1);
+	}
+}
+int Phase_estimation(int x, int M) {
 	int n = 4;
-	Qubits x = Qubits(15, 2 * n);
+	Qubits qbits = Qubits(1, 2 * n);
 
-	for (int i = n;i < 2 * n;i++) {
-		x.H(i);
-	}
+	qbits.print_s();
+	for (int i = n;i < 2 * n;i++)
+		qbits.H(i);
+	qbits.print_s();
 
-	for (int i = 0;i < n;i++) {
-		//x.CNOT(i, );
-	}
+	qbits.CSWAP(4, 0, 3);
+	qbits.CSWAP(4, 2, 3);
+	qbits.CSWAP(4, 1, 2);
 
-	quantum_reverse_fourier(x, n);
+	qbits.CSWAP(5, 1, 3);
+	qbits.CSWAP(5, 0, 2);
+	qbits.print_s();
 
-	int ans = x.M_all();
-	printf("%s\n", btoS(2 * n, ans).c_str());
+	quantum_reverse_fourier(qbits, 4, 8);
+	qbits.print_s();
 
-	return 0;
+	int r = qbits.M_all();
+	printf("%s\n", btoS(2 * n, r).c_str());
+
+	return r;
 }
 
 int Shor_algorism(int M) {
+	int ans = 0;
 	if (M % 2 == 0)
 		return 2;
+
+	int x = 2;
+	ans = gcd(x, M);
+	if (ans > 1)
+		return ans;
+
+	int r = Phase_estimation(x, M);
+
+	if (r % 2 == 0 && (int)pow(x, r / 2) % M != M-1) {
+		ans = gcd(pow(x, r / 2 - 1), M);
+		if (M % ans == 0)
+			return ans;
+		ans = gcd(pow(x, r / 2 + 1), M);
+		if (M % ans == 0)
+			return ans;
+	}
 
 	return 0;
 }
@@ -96,17 +160,16 @@ void fourier_test() {
 	Qubits x = Qubits(9, 4);
 	x.print();
 	printf("qft\n");
-	quantum_fourier(x, 4);
+	quantum_fourier(x, 0, 4);
 	x.print();
 	printf("iqft\n");
-	quantum_reverse_fourier(x, 4);
+	quantum_reverse_fourier(x, 0, 4);
 	x.print();
 	delete[] x.elem;
 }
 
 int main() {
 	Qubits x = Qubits(9, 4);
-	printf("%d\n", gcd(15, 3));
 	printf("%d\n", Shor_algorism(15));
 	delete[] x.elem;
 	return 0;

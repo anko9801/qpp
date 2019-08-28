@@ -42,15 +42,59 @@ public:
 		elem[val] = complex<double>(1.0, 0.0);
 	}
 
+	/*
 	~Qubits() {
-		delete[] elem;
-	}
+		;
+	}*/
 
 	void print() {
-		printf("-----print-----\n");
+		printf("-----Qubits-----\n");
 		for (int i = 0;i < q_size;i++) {
 			printf("|%s> %f + %fi\n", btoS(bits, i).c_str(), elem[i].real(), elem[i].imag());
 		}
+	}
+
+	void print_s() {
+		printf("-----Qubits-----\n");
+		for (int i = 0;i < q_size;i++) {
+			if (abs(elem[i]) != 0)
+				printf("|%s> %f + %fi\n", btoS(bits, i).c_str(), elem[i].real(), elem[i].imag());
+		}
+	}
+
+	void size_assert() {
+		double size = 0;
+		for (int i = 0;i < q_size;i++) {
+			size += pow(abs(elem[i]), 2.0);
+		}
+		printf("size");
+		if (size < 0.9 || size > 1.1) {
+			printf("assert %f\n", size);
+		}else{
+			printf("ok\n");
+		}
+	}
+
+	void ControlledX(int target, int begin, int end) {
+		complex<double> *new_elem = new complex<double>[q_size];
+
+		int c_bitmask = 0;
+		for (int i = begin;i < end;i++) {
+			c_bitmask |= 1 << i;
+		}
+		int t_bitmask = (1 << target);
+		for (int i = 0;i < q_size;i++) {
+			int act_index = i;
+			if ((i & c_bitmask) == c_bitmask) {
+				act_index = i ^ t_bitmask;
+			}
+			new_elem[act_index] = elem[i];
+		}
+		for (int i = 0;i < q_size;i++) {
+			elem[i] = new_elem[i];
+		}
+
+		delete[] new_elem;
 	}
 
 	void CCNOT(int control1, int control2, int target) {
@@ -188,20 +232,32 @@ public:
 	}
 
 	void Rx(int index, double theta) {
-		complex<double> *new_elem = new complex<double>[q_size];
 		int bitmask = (1 << index);
 
 		for (int i = 0;i < q_size;i++) {
 			if (i & bitmask) {
-				new_elem[i] = sqrt(2) * elem[i] * complex<double>(cos(theta), sin(theta)) / 2.0;
-			}else{
-				new_elem[i] = sqrt(2) * elem[i] / 2.0;
+				elem[i] = elem[i] * complex<double>(cos(theta), sin(theta));
 			}
 		}
+	}
 
-		for (int i = 0;i < q_size;i++)
-			elem[i] = new_elem[i];
-		delete[] new_elem;
+	/*
+	void C(int c_bit, int = ([=]{ return 0; })) {
+		int bitmask = 1 << c_bit;
+		for (int i = 0;i < q_size;i++) {
+			if ((i & bitmask) == bitmask) {
+				
+			}
+		}
+	}*/
+
+	void CRx(int c_bit, int index, double theta) {
+		int bitmask = 1 << c_bit;
+		for (int i = 0;i < q_size;i++) {
+			if ((i & bitmask) == bitmask) {
+				Rx(index, theta);
+			}
+		}
 	}
 
 	int M(int index) {
@@ -258,5 +314,11 @@ public:
 		CNOT(a, b);
 		CNOT(b, a);
 		CNOT(a, b);
+	}
+
+	void CSWAP(int c, int target1, int target2) {
+		CCNOT(c, target1, target2);
+		CCNOT(c, target2, target1);
+		CCNOT(c, target1, target2);
 	}
 };
