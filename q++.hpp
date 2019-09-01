@@ -33,9 +33,9 @@ public:
 	Qubits(int val, int size, bool compile) : q_size(pow(2, size)), bits(size), isCompile(compile) {
 		if (compile) {
 			printf("OPENQASM 2.0;\n");
-			printf("include \"qelib1.inc\";\n");
+			printf("include \"qelib1.inc\";\n\n");
 			printf("qreg q[%d];\n", size);
-			printf("creg c[%d];\n", size);
+			printf("creg c[%d];\n\n", size);
 		}else{
 			elem = new complex<double>[q_size];
 			for (int i = 0;i < size;i++) {
@@ -130,24 +130,36 @@ public:
 	}
 
 	void Set(int index) {
-		double one = 0;
-		for (int i = 0;i < q_size;i++) {
-			if (pow(abs(elem[i]), 2.0) > 0 || index == i)
-				one++;
+		if (isCompile)
+			X(index);
+		else{
+			double one = 0;
+			for (int i = 0;i < q_size;i++) {
+				if (pow(abs(elem[i]), 2.0) > 0 || index == i)
+					one++;
+			}
+			one = sqrt(1 / one);
+			for (int i = 0;i < q_size;i++) {
+				if (pow(abs(elem[i]), 2.0) > 0)
+					elem[i] = complex<double>(one, 0.0);
+			}
+			elem[index] = complex<double>(one, 0.0);
 		}
-		one = sqrt(1 / one);
-		for (int i = 0;i < q_size;i++) {
-			if (pow(abs(elem[i]), 2.0) > 0)
-				elem[i] = complex<double>(one, 0.0);
-		}
-		elem[index] = complex<double>(one, 0.0);
 	}
 
 	void SetEx(int index) {
-		for (int i = 0;i < q_size;i++) {
-			elem[i] = complex<double>(0.0, 0.0);
+		if (isCompile)
+			for (int i = 0;i < bits;i++) {
+				if ((index >> i) & 1) {
+					X(i);
+				}
+			}
+		else{
+			for (int i = 0;i < q_size;i++) {
+				elem[i] = complex<double>(0.0, 0.0);
+			}
+			elem[index] = complex<double>(1.0, 0.0);
 		}
-		elem[index] = complex<double>(1.0, 0.0);
 	}
 
 	void Reset() {
@@ -267,36 +279,39 @@ public:
 	int M(int index) {
 		if (isCompile)
 			printf("measure q[%d] -> c[%d];\n", index, index);
-		double rand_val = rnd() / 0xffffffff;
-		int bitmask = 1 << index;
+		else{
+			double rand_val = rnd() / 0xffffffff;
+			int bitmask = 1 << index;
 
-		double zero = 0, one = 0;
-		for (int i = 0;i < q_size;i++) {
-			if ((i & bitmask) == bitmask)
-				one += pow(abs(elem[i]), 2.0);
-			else
-				zero += pow(abs(elem[i]), 2.0);
-		}
-
-		if (rand_val < zero) {
-			zero = 1 / sqrt(zero);
+			double zero = 0, one = 0;
 			for (int i = 0;i < q_size;i++) {
 				if ((i & bitmask) == bitmask)
-					elem[i] = 0.0;
+					one += pow(abs(elem[i]), 2.0);
 				else
-					elem[i] *= zero;
+					zero += pow(abs(elem[i]), 2.0);
 			}
-			return 0;
-		}else{
-			one = 1 / sqrt(one);
-			for (int i = 0;i < q_size;i++) {
-				if ((i & bitmask) == bitmask)
-					elem[i] *= one;
-				else
-					elem[i] = 0.0;
+
+			if (rand_val < zero) {
+				zero = 1 / sqrt(zero);
+				for (int i = 0;i < q_size;i++) {
+					if ((i & bitmask) == bitmask)
+						elem[i] = 0.0;
+					else
+						elem[i] *= zero;
+				}
+				return 0;
+			}else{
+				one = 1 / sqrt(one);
+				for (int i = 0;i < q_size;i++) {
+					if ((i & bitmask) == bitmask)
+						elem[i] *= one;
+					else
+						elem[i] = 0.0;
+				}
+				return 1;
 			}
-			return 1;
 		}
+		return -1;
 	}
 
 	int M_all() {
@@ -325,9 +340,13 @@ public:
 
 	// extended functions
 	void SWAP(int a, int b) {
-		CNOT(a, b);
-		CNOT(b, a);
-		CNOT(a, b);
+		if (isCompile) {
+			printf("swap q[%d], q[%d];\n", a, b);
+		}else{
+			CNOT(a, b);
+			CNOT(b, a);
+			CNOT(a, b);
+		}
 	}
 
 	void CSWAP(int c, int target1, int target2) {

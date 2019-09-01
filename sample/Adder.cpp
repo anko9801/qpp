@@ -4,7 +4,7 @@
 using namespace std;
 
 int Add(int bit, int a, int b) {
-	Qubits qbits (b << bit | a, 3*bit+1, false);
+	Qubits qbits (b << bit | a, 3*bit+1, true);
 	for (int i = 0;i < bit;i++) {
 		qbits.FullAdder(i, i+bit, i+2*bit, i+2*bit+1);
 	}
@@ -18,7 +18,7 @@ int Sub(int bit, int a, int b) {
 	for (int i = 0;i < bit;i++) {
 		rev_a |= (a & (1 << i)) >> i;
 	}
-	Qubits qbits = Qubits(b << bit | rev_a, 3*bit+1, false);
+	Qubits qbits = Qubits(b << bit | rev_a, 3*bit+1, true);
 
 	for (int i = 0;i < bit;i++) {
 		qbits.FullSubtractor(i, i+bit, i+2*bit, i+2*bit+1);
