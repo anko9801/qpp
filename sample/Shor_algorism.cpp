@@ -106,6 +106,7 @@ void ROR(Qubits q, int begin, int end) {
 		q.SWAP(i, i-1);
 	}
 }
+
 int Phase_estimation(int x, int M) {
 	int n = 4;
 	Qubits qbits = Qubits(1, 2 * n);
