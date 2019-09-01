@@ -8,6 +8,7 @@ typedef struct int2 {
 	int r;
 	int s;
 } int2;
+
 int2 renbun(double a) {
 	vector<int> cont;
 	while (floor(a) < 10000) {
@@ -60,7 +61,6 @@ Qubits quantum_reverse_fourier(Qubits x, int begin, int end) {
 				x.CRx(i-j+1, i, - 2 * M_PI / pow(2, j));
 		}
 	}
-	//x.print_s();
 	return x;
 }
 

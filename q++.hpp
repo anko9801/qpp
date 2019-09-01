@@ -23,16 +23,12 @@ string btoS(int size, int val) {
 	return str;
 }
 
-class Qubit {
-	complex<double> zero;
-	complex<double> one;
-};
-
 class Qubits {
 public:
 	complex<double> *elem;
 	int q_size;
 	int bits;
+	bool isPrint;
 
 	Qubits(int val, int size) : q_size(pow(2, size)), bits(size) {
 		elem = new complex<double>[q_size];
@@ -41,11 +37,6 @@ public:
 		}
 		elem[val] = complex<double>(1.0, 0.0);
 	}
-
-	/*
-	~Qubits() {
-		;
-	}*/
 
 	void print() {
 		printf("-----Qubits-----\n");
@@ -98,6 +89,8 @@ public:
 	}
 
 	void CCNOT(int control1, int control2, int target) {
+		if (isPrint)
+			printf("ccx q[%d], q[%d], q[%d];\n", control1, control2, target);
 		complex<double> *new_elem = new complex<double>[q_size];
 
 		int c_bitmask = (1 << control1) | (1 << control2);
@@ -117,6 +110,8 @@ public:
 	}
 
 	void CNOT(int control, int target) {
+		if (isPrint)
+			printf("cx q[%d], q[%d];\n", control, target);
 		CCNOT(control, control, target);
 	}
 
@@ -147,10 +142,6 @@ public:
 		}
 		elem[0] = complex<double>(1.0, 0.0);
 	}
-
-	/*Qubit get(int bit) {
-		
-	}*/
 
 	void H(int index) {
 		complex<double> *new_elem = new complex<double>[q_size];
@@ -241,16 +232,6 @@ public:
 		}
 	}
 
-	/*
-	void C(int c_bit, int = ([=]{ return 0; })) {
-		int bitmask = 1 << c_bit;
-		for (int i = 0;i < q_size;i++) {
-			if ((i & bitmask) == bitmask) {
-				
-			}
-		}
-	}*/
-
 	void CRx(int c_bit, int index, double theta) {
 		int bitmask = 1 << c_bit;
 		for (int i = 0;i < q_size;i++) {
@@ -310,6 +291,8 @@ public:
 		return decide+1;
 	}
 
+
+	// extended functions
 	void SWAP(int a, int b) {
 		CNOT(a, b);
 		CNOT(b, a);
@@ -320,5 +303,29 @@ public:
 		CCNOT(c, target1, target2);
 		CCNOT(c, target2, target1);
 		CCNOT(c, target1, target2);
+	}
+
+	void HalfAdder(int a, int b, int c){
+		CCNOT(a, b, c);
+		CNOT (b, a);
+	}
+
+	void FullAdder(int a, int b, int c0, int c1) {
+		CCNOT(a, b, c1);
+		CNOT (a, b);
+		CCNOT(b, c0, c1);
+		CNOT (b, c0);
+	}
+
+	void HalfSubtractor(int a, int b, int c){
+		CNOT (b, a);
+		CCNOT(a, b, c);
+	}
+
+	void FullSubtractor(int a, int b, int c0, int c1) {
+		CCNOT(a, b, c1);
+		CNOT (a, b);
+		CCNOT(b, c0, c1);
+		CNOT (b, c0);
 	}
 };
