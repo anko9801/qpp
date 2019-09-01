@@ -98,7 +98,7 @@ int Phase_estimation(int x, int M) {
 	return r;
 }
 
-int Shor_algorism(int M) {
+int Shor_algorithm(int M) {
 	int ans = 0;
 	if (M % 2 == 0)
 		return 2;
@@ -136,7 +136,7 @@ void fourier_test() {
 int main() {
 	fourier_test();
 	Qubits x = Qubits(9, 4, false);
-	printf("%d\n", Shor_algorism(15));
+	printf("%d\n", Shor_algorithm(15));
 	delete[] x.elem;
 	return 0;
 }

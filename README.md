@@ -1,25 +1,25 @@
 # Q++
-Compilation Errorを打ち砕く量子コンピュータのシミュレータライブラリQ++です。
+Q++ is a quantum computer simulator and OpenQASM compiler on C++. Q++ can make pulses, circuits, and algorithms.
 
-# 機能
-基本的な量子論理ゲート
-- Xゲート
-- Yゲート
-- Zゲート
-- Hadamardゲート
-- CNOTゲート
-- CCNOTゲート
+# functions
+basic logic gate
+- X gate
+- Y gate
+- Z gate
+- Hadamard gate
+- CNOT gate
+- CCNOT gate
 
-それらを使ったアルゴリズム
-- swapゲート
+circuits and algorithms
+- swap gate
 - Half Adder
 - Full Adder
 - Half Subtractor
 - Full Subtractor
 - Fibonatch
-- 量子テレポーテーション
-- 量子フーリエ変換
-- Shorのアルゴリズム
+- Quantum Teleportation
+- Quantum Fourier Transform
+- Shor's algorithm
 - Bit Flip Error Collection
 - Phase Flip Error Collection
 
