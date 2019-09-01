@@ -28,7 +28,7 @@ public:
 	complex<double> *elem;
 	int q_size;
 	int bits;
-	bool isPrint;
+	bool isCompile;
 
 	Qubits(int val, int size) : q_size(pow(2, size)), bits(size) {
 		elem = new complex<double>[q_size];
@@ -89,7 +89,7 @@ public:
 	}
 
 	void CCNOT(int control1, int control2, int target) {
-		if (isPrint)
+		if (isCompile)
 			printf("ccx q[%d], q[%d], q[%d];\n", control1, control2, target);
 		complex<double> *new_elem = new complex<double>[q_size];
 
@@ -110,7 +110,7 @@ public:
 	}
 
 	void CNOT(int control, int target) {
-		if (isPrint)
+		if (isCompile)
 			printf("cx q[%d], q[%d];\n", control, target);
 		CCNOT(control, control, target);
 	}
@@ -130,6 +130,8 @@ public:
 	}
 
 	void SetEx(int index) {
+		if (isCompile)
+			printf();
 		for (int i = 0;i < q_size;i++) {
 			elem[i] = complex<double>(0.0, 0.0);
 		}
@@ -137,13 +139,12 @@ public:
 	}
 
 	void Reset() {
-		for (int i = 0;i < q_size;i++) {
-			elem[i] = complex<double>(0.0, 0.0);
-		}
-		elem[0] = complex<double>(1.0, 0.0);
+		SetEx(0);
 	}
 
 	void H(int index) {
+		if (isCompile)
+			printf("h q[%d];\n", index);
 		complex<double> *new_elem = new complex<double>[q_size];
 
 		int bitmask = (1 << index);
@@ -164,6 +165,8 @@ public:
 	}
 
 	void X(int index) {
+		if (isCompile)
+			printf("x q[%d];\n", index);
 		complex<double> *new_elem = new complex<double>[q_size];
 		int bitmask = (1 << index);
 
@@ -180,6 +183,8 @@ public:
 	}
 
 	void Y(int index) {
+		if (isCompile)
+			printf("y q[%d];\n", index);
 		complex<double> *new_elem = new complex<double>[q_size];
 		int bitmask = (1 << index);
 
@@ -196,6 +201,8 @@ public:
 	}
 
 	void Z(int index) {
+		if (isCompile)
+			printf("z q[%d];\n", index);
 		complex<double> *new_elem = new complex<double>[q_size];
 		int bitmask = (1 << index);
 
@@ -211,6 +218,8 @@ public:
 	}
 
 	void Rx(int index, double theta) {
+		if (isCompile)
+			printf("rx(%f) q[%d];\n", theta, index);
 		int bitmask = (1 << index);
 
 		for (int i = 0;i < q_size;i++) {
@@ -230,6 +239,8 @@ public:
 	}
 
 	int M(int index) {
+		if (isCompile)
+			printf("measure q[%d] -> c[%d];\n", index);
 		double rand_val = rnd() / 0xffffffff;
 		int bitmask = 1 << index;
 
@@ -263,6 +274,9 @@ public:
 	}
 
 	int M_all() {
+		if (isCompile)
+			for (int i = 0;i < bits;i++)
+				printf("measure q[%d] -> c[%d];\n", i);
 		double rand_val = rnd() / 0xffffffff;
 		double cur_val = 0.0;
 		int decide = -1;

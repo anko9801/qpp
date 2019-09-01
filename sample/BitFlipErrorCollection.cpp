@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-// return value is qubit which happen bit flip error
+// return value is qubit index which happened bit flip error
 int BitFlipErrorCollection() {
 	Qubits x = Qubits(0, 3);
 	x.H(0);

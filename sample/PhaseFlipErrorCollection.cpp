@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-// return value is qubit which happen the phase flip error
+// return value is qubit index which happened the phase flip error
 int PhaseFlipErrorCollection() {
 	Qubits x = Qubits(0, 3);
 	x.H(0);
