@@ -1,4 +1,4 @@
-#include "../q++.hpp"
+#include "../../q++.hpp"
 #include <iostream>
 
 using namespace std;

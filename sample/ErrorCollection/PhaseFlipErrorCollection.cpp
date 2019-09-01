@@ -1,20 +1,26 @@
-#include "../q++.hpp"
+#include "../../q++.hpp"
 #include <iostream>
 using namespace std;
 
-// return value is qubit index which happened bit flip error
-int BitFlipErrorCollection() {
+// return value is qubit index which happened the phase flip error
+int PhaseFlipErrorCollection() {
 	Qubits x = Qubits(0, 3, true);
 	x.H(0);
 
 	// protect the first qubit
 	x.CNOT(0, 1);
 	x.CNOT(0, 2);
+	x.H(0);
+	x.H(1);
+	x.H(2);
 
-	// bit flip error
-	x.X(0);
+	// phase flip error
+	x.Z(0);
 
 	// decode
+	x.H(0);
+	x.H(1);
+	x.H(2);
 	x.CNOT(0, 2);
 	x.CNOT(0, 1);
 	int C1 = x.M(1);
@@ -30,6 +36,6 @@ int BitFlipErrorCollection() {
 }
 
 int main() {
-	printf("%d\n", BitFlipErrorCollection());
+	printf("%d\n", PhaseFlipErrorCollection());
 	return 0;
 }
