@@ -4,7 +4,7 @@ using namespace std;
 
 // return value is qubit index which happened bit flip error
 int BitFlipErrorCollection() {
-	Qubits x = Qubits(0, 3);
+	Qubits x = Qubits(0, 3, false);
 	x.H(0);
 
 	// protect the first qubit

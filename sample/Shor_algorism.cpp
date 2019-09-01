@@ -30,12 +30,12 @@ int2 renbun(double a) {
 }
 
 Qubits quantum_fourier(Qubits x, int begin, int end) {
-	for (int i = end-1;i >= begin;i--) {
-		for (int j = 1;j < i-begin+2;j++) {
+	for (int i = begin;i < end;i++) {
+		for (int j = 1;j < end-i+1;j++) {
 			if (j == 1)
 				x.H(i);
 			else
-				x.CRx(i-j+1, i, 2 * M_PI / pow(2, j));
+				x.CRx(i+j-1, i, 2 * M_PI / pow(2, j));
 		}
 	}
 
@@ -50,44 +50,12 @@ Qubits quantum_reverse_fourier(Qubits x, int begin, int end) {
 		x.SWAP(i, end-1 - i + begin);
 	}
 
-	for (int i = begin;i < end;i++) {
-		for (int j = i+1-begin;j >= 1;j--) {
+	for (int i = end-1;i >= begin;i--) {
+		for (int j = end-i;j >= 1;j--) {
 			if (j == 1)
 				x.H(i);
 			else
-				x.CRx(i-j+1, i, - 2 * M_PI / pow(2, j));
-		}
-	}
-	return x;
-}
-
-Qubits quantum_fourier(Qubits x, int n) {
-	for (int i = 0;i < n;i++) {
-		for (int j = 1;j <= n - i;j++) {
-			if (j == 1)
-				x.H(i);
-			else
-				x.Rx(i, 2 * M_PI / pow(2, j));
-		}
-	}
-
-	for (int i = 0;i < x.bits / 2;i++) {
-		x.SWAP(i, x.bits-1 - i);
-	}
-	return x;
-}
-
-Qubits quantum_reverse_fourier(Qubits x, int n) {
-	for (int i = 0;i < x.bits / 2;i++) {
-		x.SWAP(i, x.bits-1 - i);
-	}
-
-	for (int i = n-1;i >= 0;i--) {
-		for (int j = n-i;j >= 1;j--) {
-			if (j == 1)
-				x.H(i);
-			else
-				x.Rx(i, - 2 * M_PI / pow(2, j));
+				x.CRx(i+j-1, i, - 2 * M_PI / pow(2, j));
 		}
 	}
 	return x;
@@ -106,7 +74,7 @@ void ROR(Qubits q, int begin, int end) {
 
 int Phase_estimation(int x, int M) {
 	int n = 4;
-	Qubits qbits = Qubits(1, 2 * n);
+	Qubits qbits = Qubits(1, 2 * n, false);
 
 	qbits.print_s();
 	for (int i = n;i < 2 * n;i++)
@@ -155,19 +123,19 @@ int Shor_algorism(int M) {
 }
 
 void fourier_test() {
-	Qubits x = Qubits(9, 4);
+	Qubits x = Qubits(9, 4, true);
 	x.print();
-	printf("qft\n");
+	//printf("qft\n");
 	quantum_fourier(x, 0, 4);
 	x.print();
-	printf("iqft\n");
+	//printf("iqft\n");
 	quantum_reverse_fourier(x, 0, 4);
 	x.print();
-	delete[] x.elem;
 }
 
 int main() {
-	Qubits x = Qubits(9, 4);
+	fourier_test();
+	Qubits x = Qubits(9, 4, false);
 	printf("%d\n", Shor_algorism(15));
 	delete[] x.elem;
 	return 0;

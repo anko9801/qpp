@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-	Qubits x = Qubits(0, 3);
+	Qubits x = Qubits(0, 3, true);
 
 	x.SetEx(4);
 	x.H(1);
@@ -13,8 +13,10 @@ int main() {
 	x.H(2);
 	int M1 = x.M(2);
 	int M2 = x.M(1);
-	x.CX(0, M2);
-	x.CZ(0, M1);
+	if (M2 == 1)
+		x.X(0);
+	if (M1 == 1)
+		x.Z(0);
 	int M3 = x.M(0);
 
 	printf("%d\n", M3);
