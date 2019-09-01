@@ -3,9 +3,18 @@ Q++ is a quantum computer simulator and OpenQASM compiler on C++. Q++ can make p
 
 # functions
 basic logic gate
+- U gate
+- id gate
 - X gate
 - Y gate
 - Z gate
+- S gate
+- S† gate
+- T gate
+- T† gate
+- Rx gate
+- Ry gate
+- Rz gate
 - Hadamard gate
 - CNOT gate
 - CCNOT gate
