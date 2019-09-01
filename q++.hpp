@@ -6,7 +6,6 @@
 #include <random>
 
 using namespace std;
-
 std::random_device rnd;
 
 string btoS(int size, int val) {
@@ -166,6 +165,79 @@ public:
 		SetEx(0);
 	}
 
+	void U(int bit, double theta, double phi, double lambda) {
+		if (isCompile)
+			printf("u3(%f,%f,%f) q[%d];\n", theta, phi, lambda, bit);
+		else{
+			int bitmask = 1 << bit;
+			for (int i = 0;i < q_size;i++) {
+				if (i & bitmask)
+					elem[i] = elem[i] * complex<double>(cos(-(phi+lambda)/2), sin(-(phi+lambda)/2)) * cos(theta/2)
+						- elem[i^bitmask] * complex<double>(cos(-(phi-lambda)/2), sin(-(phi-lambda)/2)) * sin(theta/2);
+				else
+					elem[i] = elem[i] * complex<double>(cos((phi-lambda)/2), sin((phi-lambda)/2)) * sin(theta/2)
+						+ elem[i^bitmask] * complex<double>(cos((phi+lambda)/2), sin((phi+lambda)/2)) * cos(theta/2);
+			}
+		}
+	}
+
+	void Id(int bit) {
+		if (isCompile)
+			printf("id q[%d];\n", bit);
+	}
+
+	void S(int bit) {
+		if (isCompile)
+			printf("s q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, 1.0);
+				}
+			}
+		}
+	}
+
+	void SDG(int bit) {
+		if (isCompile)
+			printf("sdg q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, -1.0);
+				}
+			}
+		}
+	}
+
+	void T(int bit) {
+		if (isCompile)
+			printf("t q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, sqrt(2) / 2);
+				}
+			}
+		}
+	}
+
+	void TDG(int bit) {
+		if (isCompile)
+			printf("tdg q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, -sqrt(2) / 2);
+				}
+			}
+		}
+	}
+
 	void H(int index) {
 		if (isCompile)
 			printf("h q[%d];\n", index);
@@ -253,6 +325,50 @@ public:
 		if (isCompile)
 			printf("rx(%f) q[%d];\n", theta, bit);
 		else{
+			complex<double> *new_elem = new complex<double>[q_size];
+			int bitmask = (1 << bit);
+
+			for (int i = 0;i < q_size;i++) {
+				if (i & bitmask) {
+					new_elem[i] = elem[i] * complex<double>(cos(theta/2), 0.0)
+								+ elem[i^bitmask] * complex<double>(0.0, -sin(theta/2));
+					new_elem[i^bitmask] = elem[i^bitmask] * complex<double>(-sin(theta/2), 0.0)
+								+ elem[i^bitmask] * complex<double>(0.0, cos(theta/2));
+				}
+			}
+
+			for (int i = 0;i < q_size;i++)
+				elem[i] = new_elem[i];
+			delete[] new_elem;
+		}
+	}
+
+	void Ry(int bit, double theta) {
+		if (isCompile)
+			printf("ry(%f) q[%d];\n", theta, bit);
+		else{
+			complex<double> *new_elem = new complex<double>[q_size];
+			int bitmask = (1 << bit);
+
+			for (int i = 0;i < q_size;i++) {
+				if (i & bitmask) {
+					new_elem[i] = elem[i] * complex<double>(cos(theta/2), 0.0)
+								+ elem[i^bitmask] * complex<double>(-sin(theta/2), 0.0);
+					new_elem[i^bitmask] = elem[i^bitmask] * complex<double>(-sin(theta/2), 0.0)
+								+ elem[i^bitmask] * complex<double>(cos(theta/2), 0.0);
+				}
+			}
+
+			for (int i = 0;i < q_size;i++)
+				elem[i] = new_elem[i];
+			delete[] new_elem;
+		}
+	}
+
+	void Rz(int bit, double theta) {
+		if (isCompile)
+			printf("rz(%f) q[%d];\n", theta, bit);
+		else{
 			int bitmask = (1 << bit);
 
 			for (int i = 0;i < q_size;i++) {
@@ -263,14 +379,14 @@ public:
 		}
 	}
 
-	void CRx(int c_bit, int t_bit, double theta) {
+	void CRz(int c_bit, int t_bit, double theta) {
 		if (isCompile)
 			printf("cu1(%f) q[%d], q[%d];\n", theta, c_bit, t_bit);
 		else{
 			int cbitmask = 1 << c_bit;
 			for (int i = 0;i < q_size;i++) {
 				if ((i & cbitmask) == cbitmask) {
-					Rx(t_bit, theta);
+					Rz(t_bit, theta);
 				}
 			}
 		}

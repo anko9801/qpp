@@ -35,7 +35,7 @@ Qubits quantum_fourier(Qubits x, int begin, int end) {
 			if (j == 1)
 				x.H(i);
 			else
-				x.CRx(i+j-1, i, 2 * M_PI / pow(2, j));
+				x.CRz(i+j-1, i, 2 * M_PI / pow(2, j));
 		}
 	}
 
@@ -55,7 +55,7 @@ Qubits quantum_reverse_fourier(Qubits x, int begin, int end) {
 			if (j == 1)
 				x.H(i);
 			else
-				x.CRx(i+j-1, i, - 2 * M_PI / pow(2, j));
+				x.CRz(i+j-1, i, - 2 * M_PI / pow(2, j));
 		}
 	}
 	return x;
