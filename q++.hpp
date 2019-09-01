@@ -179,18 +179,6 @@ public:
 		delete[] new_elem;
 	}
 
-	void CX(int index, int value) {
-		if (value == 1) {
-			X(index);
-		}
-	}
-
-	void CZ(int index, int value) {
-		if (value == 1) {
-			Z(index);
-		}
-	}
-
 	void Y(int index) {
 		complex<double> *new_elem = new complex<double>[q_size];
 		int bitmask = (1 << index);

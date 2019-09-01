@@ -20,4 +20,6 @@ Compilation Errorを打ち砕く量子コンピュータのシミュレータラ
 - 量子テレポーテーション
 - 量子フーリエ変換
 - Shorのアルゴリズム
+- Bit Flip Error Collection
+- Phase Flip Error Collection
 
