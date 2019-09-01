@@ -32,7 +32,6 @@ int2 renbun(double a) {
 Qubits quantum_fourier(Qubits x, int begin, int end) {
 	for (int i = end-1;i >= begin;i--) {
 		for (int j = 1;j < i-begin+2;j++) {
-			printf("%d %d\n", i, j);
 			if (j == 1)
 				x.H(i);
 			else
@@ -51,10 +50,8 @@ Qubits quantum_reverse_fourier(Qubits x, int begin, int end) {
 		x.SWAP(i, end-1 - i + begin);
 	}
 
-	x.print_s();
 	for (int i = begin;i < end;i++) {
 		for (int j = i+1-begin;j >= 1;j--) {
-			printf("%d %d\n", i, j);
 			if (j == 1)
 				x.H(i);
 			else
