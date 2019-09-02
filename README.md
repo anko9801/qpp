@@ -8,15 +8,17 @@ basic logic gate
 - X gate
 - Y gate
 - Z gate
-- S gate
-- S† gate
-- T gate
-- T† gate
+- CX gate
+- CY gate
+- CZ gate
 - Rx gate
 - Ry gate
 - Rz gate
 - Hadamard gate
-- CNOT gate
+- S gate
+- S† gate
+- T gate
+- T† gate
 - CCNOT gate
 
 circuits and algorithms
