@@ -186,58 +186,6 @@ public:
 			printf("id q[%d];\n", bit);
 	}
 
-	void S(int bit) {
-		if (isCompile)
-			printf("s q[%d];\n", bit);
-		else{
-			int bitmask = (1 << bit);
-			for (int i = 0;i < q_size;i++) {
-				if ((i & bitmask) == bitmask) {
-					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, 1.0);
-				}
-			}
-		}
-	}
-
-	void SDG(int bit) {
-		if (isCompile)
-			printf("sdg q[%d];\n", bit);
-		else{
-			int bitmask = (1 << bit);
-			for (int i = 0;i < q_size;i++) {
-				if ((i & bitmask) == bitmask) {
-					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, -1.0);
-				}
-			}
-		}
-	}
-
-	void T(int bit) {
-		if (isCompile)
-			printf("t q[%d];\n", bit);
-		else{
-			int bitmask = (1 << bit);
-			for (int i = 0;i < q_size;i++) {
-				if ((i & bitmask) == bitmask) {
-					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, sqrt(2) / 2);
-				}
-			}
-		}
-	}
-
-	void TDG(int bit) {
-		if (isCompile)
-			printf("tdg q[%d];\n", bit);
-		else{
-			int bitmask = (1 << bit);
-			for (int i = 0;i < q_size;i++) {
-				if ((i & bitmask) == bitmask) {
-					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, -sqrt(2) / 2);
-				}
-			}
-		}
-	}
-
 	void H(int index) {
 		if (isCompile)
 			printf("h q[%d];\n", index);
@@ -321,6 +269,55 @@ public:
 		}
 	}
 
+	void CX(int controll, int index) {
+		CNOT(controll, index);
+	}
+
+	void CY(int controll, int index) {
+		if (isCompile)
+			printf("cy q[%d], q[%d];\n", controll, index);
+		else{
+			complex<double> *new_elem = new complex<double>[q_size];
+			int bitmask = (1 << index);
+			int cbitmask = (1 << controll);
+
+			for (int i = 0;i < q_size;i++) {
+				if (i & cbitmask) {
+					if (i & bitmask) {
+						new_elem[i] = elem[i ^ bitmask] * complex<double>(0.0, 1.0);
+						new_elem[i ^ bitmask] = elem[i] * complex<double>(0.0, -1.0);
+					}
+				}
+			}
+
+			for (int i = 0;i < q_size;i++)
+				elem[i] = new_elem[i];
+			delete[] new_elem;
+		}
+	}
+
+	void CZ(int controll, int index) {
+		if (isCompile)
+			printf("cz q[%d], q[%d];\n", controll, index);
+		else{
+			complex<double> *new_elem = new complex<double>[q_size];
+			int bitmask = (1 << index);
+			int cbitmask = (1 << controll);
+
+			for (int i = 0;i < q_size;i++) {
+				if (i & cbitmask) {
+					if (i & bitmask) {
+						new_elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(-1.0, 0.0);
+					}
+				}
+			}
+
+			for (int i = 0;i < q_size;i++)
+				elem[i] = new_elem[i];
+			delete[] new_elem;
+		}
+	}
+
 	void Rx(int bit, double theta) {
 		if (isCompile)
 			printf("rx(%f) q[%d];\n", theta, bit);
@@ -387,6 +384,58 @@ public:
 			for (int i = 0;i < q_size;i++) {
 				if ((i & cbitmask) == cbitmask) {
 					Rz(t_bit, theta);
+				}
+			}
+		}
+	}
+
+	void S(int bit) {
+		if (isCompile)
+			printf("s q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, 1.0);
+				}
+			}
+		}
+	}
+
+	void SDG(int bit) {
+		if (isCompile)
+			printf("sdg q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(0.0, -1.0);
+				}
+			}
+		}
+	}
+
+	void T(int bit) {
+		if (isCompile)
+			printf("t q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, sqrt(2) / 2);
+				}
+			}
+		}
+	}
+
+	void TDG(int bit) {
+		if (isCompile)
+			printf("tdg q[%d];\n", bit);
+		else{
+			int bitmask = (1 << bit);
+			for (int i = 0;i < q_size;i++) {
+				if ((i & bitmask) == bitmask) {
+					elem[i ^ bitmask] = elem[i ^ bitmask] * complex<double>(sqrt(2) / 2, -sqrt(2) / 2);
 				}
 			}
 		}
