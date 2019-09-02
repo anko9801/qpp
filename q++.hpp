@@ -514,6 +514,33 @@ public:
 		}
 	}
 
+	void XOR(int a, int b, int target) {
+		CNOT(a, target);
+		CNOT(b, target);
+	}
+
+	void AND(int a, int b, int target) {
+		CCNOT(a, b, target);
+	}
+
+	void OR(int a, int b, int target) {
+		X(a);
+		X(b);
+		CCNOT(a, b, target);
+		X(target);
+	}
+
+	void NAND(int a, int b, int target) {
+		CCNOT(a, b, target);
+		X(target);
+	}
+
+	void NOR(int a, int b, int target) {
+		X(a);
+		X(b);
+		CCNOT(a, b, target);
+	}
+
 	void CSWAP(int c, int target1, int target2) {
 		CCNOT(c, target1, target2);
 		CCNOT(c, target2, target1);

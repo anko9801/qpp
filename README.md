@@ -1,8 +1,8 @@
 # Q++
 Q++ is a quantum computer simulator and OpenQASM compiler on C++. Q++ can make pulses, circuits, and algorithms.
 
-# functions
-basic logic gate
+# Functions
+Basic logic gate
 - U gate
 - id gate
 - X gate
@@ -21,7 +21,7 @@ basic logic gate
 - T† gate
 - CCNOT gate
 
-circuits and algorithms
+Circuits and Algorithms
 - swap gate
 - Half Adder
 - Full Adder
