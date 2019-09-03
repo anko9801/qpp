@@ -22,7 +22,12 @@ Basic logic gate
 - CCNOT gate
 
 Circuits and Algorithms
-- swap gate
+- AND gate
+- OR gate
+- XOR gate
+- NAND gate
+- NOR gate
+- SWAP gate
 - Half Adder
 - Full Adder
 - Half Subtractor

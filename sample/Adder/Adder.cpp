@@ -6,6 +6,7 @@ using namespace std;
 int Add(int bit, int a, int b) {
 	Qubits qbits (b << bit | a, 3*bit+1, true);
 	for (int i = 0;i < bit;i++) {
+		//              a  b      c        c+1
 		qbits.FullAdder(i, i+bit, i+2*bit, i+2*bit+1);
 	}
 	int res = qbits.M_all();

@@ -549,7 +549,7 @@ public:
 
 	void HalfAdder(int a, int b, int c){
 		CCNOT(a, b, c);
-		CNOT (b, a);
+		CNOT (a, b);
 	}
 
 	void FullAdder(int a, int b, int c0, int c1) {
@@ -560,14 +560,14 @@ public:
 	}
 
 	void HalfSubtractor(int a, int b, int c){
-		CNOT (b, a);
+		CNOT (a, b);
 		CCNOT(a, b, c);
 	}
 
 	void FullSubtractor(int a, int b, int c0, int c1) {
-		CCNOT(a, b, c1);
-		CNOT (a, b);
-		CCNOT(b, c0, c1);
 		CNOT (b, c0);
+		CCNOT(b, c0, c1);
+		CNOT (a, b);
+		CCNOT(a, b, c1);
 	}
 };
